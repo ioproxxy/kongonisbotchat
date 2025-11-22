@@ -16,8 +16,8 @@ export const initializeChat = () => {
       model: 'gemini-2.5-flash',
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.7, // A bit creative for the "casual" vibe
-        maxOutputTokens: 500, // Allow enough space for the bill calculation
+        temperature: 0.7, 
+        maxOutputTokens: 1000, 
       },
     });
 
@@ -36,9 +36,10 @@ export const resetChat = () => {
 export const sendMessageToGemini = async (message: string): Promise<string> => {
   if (!chatSession) {
     initializeChat();
-    if (!chatSession) {
-        return "Sorry pal, the register is broken. (API Error)";
-    }
+  }
+
+  if (!chatSession) {
+      return "Sorry pal, the register is broken. (Check API Key)";
   }
 
   try {
@@ -46,6 +47,22 @@ export const sendMessageToGemini = async (message: string): Promise<string> => {
     return response.text || "Sorry, didn't catch that. It's loud in here.";
   } catch (error) {
     console.error("Error sending message:", error);
-    return "Whoops, dropped a glass. Can you say that again?";
+    
+    // Attempt to recover by resetting session
+    console.log("Attempting to reset session and retry...");
+    const newSession = resetChat();
+    
+    if (newSession) {
+        try {
+            // Retry the message with the new session
+            const retryResponse = await newSession.sendMessage({ message });
+            return retryResponse.text || "Sorry, still having trouble hearing you.";
+        } catch (retryError) {
+            console.error("Retry failed:", retryError);
+        }
+    }
+
+    // Fallback if retry fails
+    return "Sorry mate, having a bit of trouble with the till. Mind asking that one more time?";
   }
 };
