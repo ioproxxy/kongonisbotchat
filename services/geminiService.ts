@@ -17,7 +17,7 @@ export const initializeChat = () => {
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.7, // A bit creative for the "casual" vibe
-        maxOutputTokens: 200, // Keep it brief
+        maxOutputTokens: 500, // Allow enough space for the bill calculation
       },
     });
 
@@ -26,6 +26,11 @@ export const initializeChat = () => {
     console.error("Failed to initialize chat:", error);
     return null;
   }
+};
+
+export const resetChat = () => {
+  chatSession = null;
+  return initializeChat();
 };
 
 export const sendMessageToGemini = async (message: string): Promise<string> => {

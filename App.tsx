@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { initializeChat, sendMessageToGemini } from './services/geminiService';
+import { initializeChat, sendMessageToGemini, resetChat } from './services/geminiService';
 import { Message } from './types';
 import { ChatMessage } from './components/ChatMessage';
 import { MenuModal } from './components/MenuModal';
@@ -67,6 +67,18 @@ function App() {
     }
   };
 
+  const handleReset = () => {
+    resetChat();
+    setMessages([
+      {
+        id: Date.now().toString(),
+        role: 'model',
+        text: "Tab cleared! Ready for a fresh round. What are you having?",
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -97,12 +109,21 @@ function App() {
             </div>
           </div>
           
-          <button 
-            onClick={() => setIsMenuOpen(true)}
-            className="text-sm font-bold text-amber-500 hover:text-amber-400 border border-amber-500/50 hover:border-amber-500 rounded-lg px-3 py-1.5 transition-all"
-          >
-            See Menu
-          </button>
+          <div className="flex gap-2">
+             <button 
+              onClick={handleReset}
+              className="text-xs font-bold text-slate-400 hover:text-slate-200 border border-slate-700 hover:border-slate-500 rounded-lg px-2 py-1.5 transition-all"
+              title="Clear chat and start new tab"
+            >
+              New Tab
+            </button>
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="text-sm font-bold text-amber-500 hover:text-amber-400 border border-amber-500/50 hover:border-amber-500 rounded-lg px-3 py-1.5 transition-all"
+            >
+              Full Menu
+            </button>
+          </div>
         </div>
       </header>
 
@@ -132,7 +153,7 @@ function App() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="What's the price of..."
+              placeholder="Order a drink or ask for the bill..."
               className="w-full bg-slate-800 text-slate-200 border border-slate-700 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 resize-none h-[52px] max-h-32 scrollbar-hide"
             />
           </div>

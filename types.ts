@@ -8,7 +8,7 @@ export interface Message {
 export interface MenuItem {
   category: string;
   item: string;
-  description: string;
+  description?: string;
   price: string;
 }
 

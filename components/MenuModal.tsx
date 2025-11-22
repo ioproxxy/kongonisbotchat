@@ -49,7 +49,9 @@ export const MenuModal: React.FC<MenuModalProps> = ({ isOpen, onClose }) => {
                       <span className="font-bold text-slate-200">{item.item}</span>
                       <span className="font-bold text-amber-400 bg-slate-800 px-2 py-0.5 rounded text-sm">{item.price}</span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 italic">{item.description}</p>
+                    {item.description && (
+                      <p className="text-xs text-slate-400 mt-1 italic">{item.description}</p>
+                    )}
                   </div>
                 ))}
               </div>
